@@ -262,9 +262,135 @@ footer.site {
   font-family: "Courier New", monospace; letter-spacing: .1em;
 }
 
-.theme-toggle {
-  position: absolute; top: 12px; right: 0; font-size: 13px; padding: 4px 8px;
+.controls {
+  position: absolute; top: 12px; right: 16px; display: flex; gap: 6px; flex-wrap: wrap;
+  justify-content: flex-end; max-width: 50%;
 }
+.controls button { font-size: 12px; padding: 4px 8px; }
+@media (max-width: 600px) {
+  .controls { position: static; max-width: none; justify-content: center; margin-bottom: 8px; }
+}
+
+/* Extra themes: Dinsdag & Binnenkant van een sok */
+:root[data-theme="dinsdag"] {
+  --paper: #fff36b; --paper-2: #ff9de2; --ink: #1d0a6b; --ink-soft: #6a2fb8;
+  --rule: #ff5fa2; --red: #e8007a; --wool: #0a7d6c; --green: #0a7d6c;
+  --card: #b6ffd9; --shadow: #ff5fa2;
+}
+:root[data-theme="dinsdag"] body { font-family: "Comic Sans MS", "Comic Neue", cursive; }
+:root[data-theme="sok"] {
+  --paper: #3a1f17; --paper-2: #4b2a1f; --ink: #f2c9a0; --ink-soft: #c0906a;
+  --rule: #6b3b2a; --red: #ff9b6b; --wool: #ffc48a; --green: #ffc48a;
+  --card: #45261c; --shadow: rgba(0,0,0,.6);
+}
+:root[data-theme="sok"] body { text-shadow: 0 0 3px currentColor; letter-spacing: .02em; }
+:root[data-theme="sok"] main { filter: blur(.4px); }
+
+/* Sock scrollbar & selection */
+html { scrollbar-color: var(--red) var(--paper-2); }
+::-webkit-scrollbar { width: 16px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb {
+  background: repeating-linear-gradient(0deg, var(--red) 0 8px, var(--paper) 8px 16px);
+  border-radius: 8px 8px 16px 4px; border: 2px solid var(--ink);
+}
+::selection { background: var(--wool); color: var(--paper); }
+
+/* Knitted reading progress */
+.progress {
+  position: fixed; top: 0; left: 0; height: 7px; z-index: 45; width: 0;
+  background: repeating-linear-gradient(90deg, var(--red) 0 10px, var(--wool) 10px 20px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.progress-label {
+  position: fixed; top: 9px; right: 8px; z-index: 45; font: 11px "Courier New", monospace;
+  background: var(--card); border: 1px solid var(--ink); padding: 1px 6px; pointer-events: none;
+}
+
+/* Loader */
+.loader {
+  position: fixed; inset: 0; z-index: 100; background: var(--paper); display: grid;
+  place-content: center; text-align: center; gap: 12px; cursor: pointer; transition: opacity .5s;
+  padding: 16px;
+}
+.loader .big { font-size: 64px; animation: spin 1.2s linear infinite; display: inline-block; }
+.loader .bar { width: min(320px, 80vw); height: 16px; border: 2px solid var(--ink); margin: 0 auto; }
+.loader .bar i {
+  display: block; height: 100%; width: 0;
+  background: repeating-linear-gradient(90deg, var(--red) 0 8px, var(--paper-2) 8px 16px);
+}
+.loader.gone { opacity: 0; pointer-events: none; }
+
+/* Sock cursor */
+.sock-cursor {
+  position: fixed; top: 0; left: 0; z-index: 90; pointer-events: none; font-size: 26px;
+  will-change: transform; display: none;
+}
+@media (pointer: fine) { .sock-cursor { display: block; } }
+
+/* Assistant "Sokkie" */
+.sokkie {
+  position: fixed; left: 16px; bottom: 16px; z-index: 35; width: 270px; max-width: calc(100vw - 32px);
+  background: var(--card); border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+  padding: 12px 12px 10px 64px; font-size: 14px; transform: translateY(160%);
+  transition: transform .4s cubic-bezier(.3, 1.6, .5, 1);
+}
+.sokkie.on { transform: translateY(0); }
+.sokkie .face { position: absolute; left: 8px; top: 10px; font-size: 40px; animation: crest-wobble 3s infinite; }
+.sokkie .x { position: absolute; top: 2px; right: 4px; border: 0; box-shadow: none; background: none; padding: 2px 6px; }
+.sokkie .acts { display: flex; gap: 6px; margin-top: 8px; }
+.sokkie .acts button { font-size: 12px; padding: 3px 8px; }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; top: 40px; z-index: 95; transform: translate(-50%, -20px);
+  background: var(--ink); color: var(--paper); padding: 10px 16px; font-size: 14px;
+  max-width: calc(100vw - 32px); opacity: 0; transition: .3s; pointer-events: none; text-align: center;
+}
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* Context menu */
+.ctx {
+  position: fixed; z-index: 96; background: var(--card); border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink); min-width: 230px; padding: 4px 0; display: none;
+  font-size: 14px; transform: rotate(-1.5deg);
+}
+.ctx.on { display: block; }
+.ctx button {
+  display: block; width: 100%; text-align: left; border: 0; box-shadow: none; background: none; padding: 7px 14px;
+}
+.ctx button:hover { background: var(--paper-2); }
+.ctx hr { border: 0; border-top: 1px dashed var(--rule); margin: 4px 0; }
+
+/* CAPTCHA modal */
+.modal-bg {
+  position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.5); display: none;
+  place-items: center; padding: 16px;
+}
+.modal-bg.on { display: grid; }
+.modal { background: var(--card); border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); padding: 16px; width: min(360px, 100%); }
+.modal h3 { margin: 0 0 4px; font-variant: small-caps; }
+.captcha-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0; }
+.captcha-grid button { font-size: 34px; padding: 10px 0; box-shadow: none; }
+.captcha-grid button.sel { outline: 4px solid var(--wool); outline-offset: -4px; background: var(--paper); }
+.captcha-msg { min-height: 2.6em; font-size: 14px; color: var(--red); }
+
+/* Upside-down section */
+.upside { transform: rotate(180deg); transition: transform .6s cubic-bezier(.5, -0.5, .5, 1.5); }
+
+/* Middle button */
+.to-middle {
+  position: fixed; right: 16px; bottom: 16px; z-index: 34; border-radius: 999px;
+  font-size: 13px; padding: 8px 12px;
+}
+
+/* Shy button */
+#bigButton { transition: transform .2s; }
+
+@media (max-width: 600px) { .sokkie { bottom: 72px; } }
+
+.charcount { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0s !important; animation-iteration-count: 1 !important; }
 }
@@ -272,11 +398,28 @@ footer.site {
 </head>
 <body>
 
+<div class="loader" id="loader" title="Klik om ongeduldig te zijn">
+  <div><span class="big">🧦</span></div>
+  <div id="loaderText">Wol wordt voorverwarmd…</div>
+  <div class="bar"><i id="loaderBar"></i></div>
+  <div class="mono" id="loaderPct">0%</div>
+  <small style="color:var(--ink-soft)">(klik om ongeduldig te zijn)</small>
+</div>
+<div class="progress" id="progress"></div>
+<div class="progress-label" id="progressLabel">Nog 104% te gaan</div>
+<div class="sock-cursor" id="sockCursor" aria-hidden="true">🧦</div>
+<div class="toast" id="toast" role="status"></div>
+
 <div class="alarm" id="alarm" role="alert">⚠ WOLBEVING GEDETECTEERD ⚠ Ga onder een stevige wasmand staan</div>
 
 <header class="masthead">
   <div class="wrap" style="position:relative">
-    <button class="theme-toggle" id="themeToggle" title="Wissel van dagdeel">☾ / ☀</button>
+    <div class="controls">
+      <button id="fontBigger" title="Maakt de tekst groter. Waarschijnlijk.">A+</button>
+      <button id="fontSmaller" title="Maakt de tekst kleiner. Misschien.">A−</button>
+      <button id="fontSock" title="Maakt de tekst sok.">A🧦</button>
+      <button id="themeToggle" title="Wissel van dagdeel">☀ Dag</button>
+    </div>
     <div class="crest" id="crest" title="Ons wapen. Het is een sok. Het is altijd een sok geweest.">🧦</div>
     <h1>Koninklijk Instituut voor<br>Sokpopseismologie</h1>
     <p class="motto">“Lana tremit, mundus audit.”<small>De wol beeft, de wereld luistert.</small></p>
@@ -354,6 +497,7 @@ footer.site {
         <span class="stamp">Formulier 7B-Wol</span>
         <label for="sockDesc">Omschrijving van de sok</label>
         <input id="sockDesc" required placeholder="bv. grijs, licht teleurgesteld, maat 43">
+        <div class="charcount" id="charcount">Maximaal 3 tekens. Kies ze zorgvuldig.</div>
         <label for="sockWhen">Laatst gezien</label>
         <select id="sockWhen">
           <option>In de wasmachine</option>
@@ -388,7 +532,8 @@ footer.site {
   <section id="getuigen">
     <h2><span class="num">IV.</span>Getuigenissen</h2>
     <p class="lede">Wat onze cliënten over ons zeggen. Wij hebben ze niet betaald. Het zijn objecten.</p>
-    <div class="grid grid-3">
+    <p><button id="rotateBtn">↻ Draai deze sectie 90°</button> <span class="hint">Deze sectie is per ongeluk ondersteboven gedrukt. Excuses aan de drukker.</span></p>
+    <div class="grid grid-3 upside" id="upside">
       <div class="card"><blockquote>“Sinds het Instituut mij heeft gekalibreerd, voel ik elke sokpop op drie kilometer afstand. Ik slaap niet meer. Vijf sterren.”<footer>— Een radiator, Apeldoorn</footer></blockquote></div>
       <div class="card"><blockquote>“Ik was erbij tijdens de Grote Beving van '98. Een kleuter deed een poppenkast. Halverwege Gouda zakte een kaas in.”<footer>— Het concept dinsdag</footer></blockquote></div>
       <div class="card"><blockquote>“Ze vroegen of ik wilde getuigen. Ik ben een linkerschoen. Ik heb geen keus in wat dan ook.”<footer>— Linkerschoen, maat 44, ongehuwd</footer></blockquote></div>
@@ -443,6 +588,39 @@ footer.site {
   </div>
 </footer>
 
+<div class="sokkie" id="sokkie" role="complementary" aria-label="Assistent Sokkie">
+  <div class="face" aria-hidden="true">🧦</div>
+  <button class="x" id="sokkieClose" aria-label="Sokkie sluiten">×</button>
+  <div id="sokkieText"></div>
+  <div class="acts" id="sokkieActs"></div>
+</div>
+
+<button class="to-middle" id="toMiddle">⇕ Naar het midden</button>
+
+<div class="ctx" id="ctxMenu" role="menu">
+  <button data-ctx="back">← Terug (naar 1743)</button>
+  <button data-ctx="copy">⧉ Kopiëren naar linkersok</button>
+  <button data-ctx="paste">📋 Plakken (met lijm)</button>
+  <hr>
+  <button data-ctx="sit">🪑 Pagina even laten zitten</button>
+  <button data-ctx="inspect">🔍 Inspecteren (met vergrootglas)</button>
+  <hr>
+  <button data-ctx="normal">Normaal menu tonen</button>
+</div>
+
+<div class="modal-bg" id="captcha" role="dialog" aria-modal="true" aria-labelledby="captchaTitle">
+  <div class="modal">
+    <h3 id="captchaTitle">Bent u een voet?</h3>
+    <p style="margin:0;font-size:14px">Selecteer alle vakjes met een <b>sok</b>. Kousen tellen niet. Kousen weten dat.</p>
+    <div class="captcha-grid" id="captchaGrid"></div>
+    <div class="captcha-msg" id="captchaMsg" aria-live="polite"></div>
+    <div style="display:flex;gap:8px;justify-content:space-between">
+      <button id="captchaCancel">Ik ben een hand</button>
+      <button id="captchaOk">Verifiëren</button>
+    </div>
+  </div>
+</div>
+
 <div class="consent" id="consent" role="dialog" aria-labelledby="consentTitle">
   <h3 id="consentTitle">Wij gebruiken sokken 🧦</h3>
   <p style="margin:0;font-size:14px">Om uw ervaring te verbeteren, plaatsen wij sokken op uw apparaat. Sommige zijn noodzakelijk, andere zijn gewoon gezellig. Door verder te gaan, gaat u akkoord met het gedragen worden door een voet.</p>
@@ -459,12 +637,96 @@ footer.site {
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
   /* ---------------- Theme ---------------- */
+  const themes = [['light', '☀ Dag'], ['dark', '☾ Nacht'], ['dinsdag', '🦆 Dinsdag'], ['sok', '🧦 Binnenkant sok']];
+  let themeIdx = matchMedia('(prefers-color-scheme: dark)').matches ? 1 : 0;
+  $('#themeToggle').textContent = themes[themeIdx][1];
   $('#themeToggle').addEventListener('click', () => {
-    const root = document.documentElement;
-    const isDark = root.dataset.theme
-      ? root.dataset.theme === 'dark'
-      : matchMedia('(prefers-color-scheme: dark)').matches;
-    root.dataset.theme = isDark ? 'light' : 'dark';
+    themeIdx = (themeIdx + 1) % themes.length;
+    document.documentElement.dataset.theme = themes[themeIdx][0];
+    $('#themeToggle').textContent = themes[themeIdx][1];
+    if (themes[themeIdx][0] === 'dinsdag') toast('Het is nu dinsdag. Voor iedereen. Sorry.');
+    if (themes[themeIdx][0] === 'sok') toast('U bevindt zich nu in een sok. Het ruikt hier naar wetenschap.');
+  });
+
+  /* ---------------- Toast ---------------- */
+  let toastTimer;
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('on'), 2800);
+  }
+
+  /* ---------------- Loader ---------------- */
+  (() => {
+    const loader = $('#loader');
+    let pct = 0, done = false;
+    const msgs = ['Wol wordt voorverwarmd…', 'Sokken worden gepaard…', 'Eén sok kwijt, zoeken…', 'Hielke wordt wakker gemaakt…', 'Nog één steek…'];
+    function finish() {
+      if (done) return;
+      done = true;
+      $('#loaderPct').textContent = '104%';
+      $('#loaderBar').style.width = '100%';
+      $('#loaderText').textContent = 'Klaar. Iets te klaar.';
+      setTimeout(() => { loader.classList.add('gone'); setTimeout(() => loader.remove(), 500); }, 350);
+    }
+    const iv = setInterval(() => {
+      if (done) return clearInterval(iv);
+      pct = pct < 99 ? Math.min(99, pct + rand(3, 14)) : pct;
+      if (pct >= 99) { pct = 99; }
+      $('#loaderBar').style.width = pct + '%';
+      $('#loaderPct').textContent = Math.floor(pct) + '%';
+      $('#loaderText').textContent = msgs[Math.min(msgs.length - 1, Math.floor(pct / 22))];
+    }, 120);
+    setTimeout(finish, 2600);
+    loader.addEventListener('click', () => { toast('Ongeduld genoteerd in uw dossier.'); finish(); });
+  })();
+
+  /* ---------------- Font size (works the wrong way round) ---------------- */
+  let zoom = 1;
+  function setZoom(z) {
+    zoom = Math.max(0.6, Math.min(1.6, z));
+    $('main').style.zoom = zoom;
+  }
+  $('#fontBigger').addEventListener('click', () => { setZoom(zoom - 0.1); toast('Groter gemaakt. Vanuit het perspectief van de tekst.'); });
+  $('#fontSmaller').addEventListener('click', () => { setZoom(zoom + 0.1); toast('Kleiner gemaakt. U zit gewoon dichter bij uw scherm nu.'); });
+  $('#fontSock').addEventListener('click', () => {
+    setZoom(rand(0.75, 1.35));
+    document.querySelectorAll('main h2').forEach(h => { h.style.transform = `rotate(${rand(-3, 3)}deg)`; });
+    toast('De tekst is nu sok. Wij weten ook niet wat dat betekent.');
+  });
+
+  /* ---------------- Reading progress (knitted, overshoots) ---------------- */
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const f = max > 0 ? scrollY / max : 0;
+    $('#progress').style.width = (f * 100) + '%';
+    const left = Math.round((1 - f) * 104);
+    $('#progressLabel').textContent = left > 0 ? `Nog ${left}% te gaan` : 'U bent te ver. Ga 4% terug.';
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------------- Sock cursor (lags behind, has feelings) ---------------- */
+  (() => {
+    const c = $('#sockCursor');
+    let tx = -100, ty = -100, x = -100, y = -100, ang = 0;
+    addEventListener('pointermove', e => { tx = e.clientX + 14; ty = e.clientY + 14; });
+    (function loop() {
+      const dx = tx - x, dy = ty - y;
+      x += dx * 0.09; y += dy * 0.09;
+      ang += (Math.max(-60, Math.min(60, dx * 0.8)) - ang) * 0.15;
+      c.style.transform = `translate(${x}px, ${y}px) rotate(${ang}deg)`;
+      requestAnimationFrame(loop);
+    })();
+  })();
+
+  /* ---------------- Nav shuffles when you look at it ---------------- */
+  const navLinks = [...document.querySelectorAll('nav.toc a')];
+  $('nav.toc').addEventListener('pointerenter', e => {
+    if (e.pointerType !== 'mouse') return;
+    navLinks.forEach(a => { a.style.order = Math.floor(rand(0, 20)); });
   });
 
   /* ---------------- Ticker ---------------- */
@@ -612,8 +874,62 @@ footer.site {
     'Een la in Tilburg die alleen op schrikkeldagen opengaat', 'De binnenkant van een dekbedovertrek',
     'Een parallel Nederland waar alles één maat te groot is'];
   const officers = ['Mw. drs. P. Pluis', 'Dhr. K. Knoop (stagiair, 104 jaar)', 'De Kous Zonder Naam', 'Inspecteur Hielke (andere Hielke)'];
+  /* ---------------- Character counter (limit: 3, enforced: never) ---------------- */
+  $('#sockDesc').addEventListener('input', e => {
+    const n = e.target.value.length, cc = $('#charcount');
+    if (n === 0) cc.textContent = 'Maximaal 3 tekens. Kies ze zorgvuldig.';
+    else if (n <= 3) cc.textContent = `Nog ${3 - n} ${3 - n === 1 ? 'teken' : 'tekens'} over. Geen druk.`;
+    else cc.textContent = `U zit ${n - 3} tekens boven de limiet van 3. Wij accepteren het, maar we zijn er niet blij mee.`;
+  });
+
+  /* ---------------- CAPTCHA ---------------- */
+  let captchaPassed = false, captchaTries = 0;
+  const tiles = ['🧦', '🧤', '🧦', '🥾', '🧦', '🧣', '🧦', '🦶', '🧦'];
+  const captchaFails = [
+    'Onjuist. Vakje 3 was een kous in vermomming.',
+    'Onjuist. U selecteerde een sok die zichzelf niet als sok identificeert.',
+  ];
+  function openCaptcha() {
+    const g = $('#captchaGrid');
+    g.innerHTML = '';
+    tiles.slice().sort(() => Math.random() - .5).forEach(t => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = t;
+      b.addEventListener('click', () => b.classList.toggle('sel'));
+      g.appendChild(b);
+    });
+    $('#captchaMsg').textContent = '';
+    $('#captcha').classList.add('on');
+    g.querySelector('button').focus();
+  }
+  $('#captchaCancel').addEventListener('click', () => {
+    $('#captcha').classList.remove('on');
+    toast('Handen mogen helaas geen sokken melden. Dat is belangenverstrengeling.');
+  });
+  $('#captchaOk').addEventListener('click', () => {
+    if (captchaTries < captchaFails.length) {
+      $('#captchaMsg').textContent = captchaFails[captchaTries++];
+      openCaptchaShuffle();
+      return;
+    }
+    captchaPassed = true;
+    $('#captchaMsg').style.color = 'var(--green)';
+    $('#captchaMsg').textContent = 'Goed genoeg. U bent waarschijnlijk een mens, of een zeer overtuigende voet.';
+    setTimeout(() => { $('#captcha').classList.remove('on'); submitDossier(); }, 1400);
+  });
+  function openCaptchaShuffle() {
+    const msg = $('#captchaMsg').textContent;
+    openCaptcha();
+    $('#captchaMsg').textContent = msg;
+  }
+  addEventListener('keydown', e => { if (e.key === 'Escape') $('#captcha').classList.remove('on'); });
+
   $('#lostForm').addEventListener('submit', e => {
     e.preventDefault();
+    if (!captchaPassed) openCaptcha(); else submitDossier();
+  });
+  function submitDossier() {
     const desc = $('#sockDesc').value.trim() || 'onbeschrijfelijk';
     const mood = +$('#sockMood').value;
     const caseNo = 'WOL-' + Math.floor(rand(1000, 9999)) + '-' + 'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(rand(0, 24))];
@@ -641,7 +957,7 @@ footer.site {
       if (++i >= lines.length) clearInterval(tw);
     }, 180);
     addEnergy(1.5);
-  });
+  }
 
   // Pie chart
   const pieData = [
@@ -833,6 +1149,116 @@ footer.site {
     e.target.textContent = 'U klikte toch. Er regent nu sokken. Tevreden?';
     addEnergy(6);
   });
+
+  /* ---------------- Upside-down section ---------------- */
+  let rot = 180;
+  $('#rotateBtn').addEventListener('click', () => {
+    rot += 90;
+    $('#upside').style.transform = `rotate(${rot}deg)`;
+    if (rot % 360 === 0) {
+      toast('Perfect. Nu staat de rest van de website ondersteboven. Grapje. Of niet.');
+      $('#rotateBtn').textContent = '↻ Nog een keer, voor de gezelligheid';
+    }
+  });
+
+  /* ---------------- "To the middle" ---------------- */
+  $('#toMiddle').addEventListener('click', () => {
+    const mid = (document.documentElement.scrollHeight - innerHeight) / 2;
+    scrollTo({ top: mid, behavior: 'smooth' });
+    toast(Math.abs(scrollY - mid) < 40 ? 'U was al in het midden. Dat is een zeldzame gave.' : 'Op weg naar het midden. Niet naar boven, niet naar beneden. Gewoon midden.');
+  });
+
+  /* ---------------- Shy big button ---------------- */
+  $('#bigButton').addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse' || presses >= reactions.length) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    e.currentTarget.style.transform = `translateX(${-dx * 0.35}px) rotate(${-dx * 0.08}deg)`;
+  });
+  $('#bigButton').addEventListener('pointerleave', e => {
+    if (presses < reactions.length) e.currentTarget.style.transform = '';
+  });
+
+  /* ---------------- Context menu ---------------- */
+  const ctxMenu = $('#ctxMenu');
+  addEventListener('contextmenu', e => {
+    if (e.shiftKey || e.target.closest('input, select')) return;
+    e.preventDefault();
+    ctxMenu.style.left = Math.min(e.clientX, innerWidth - 250) + 'px';
+    ctxMenu.style.top = Math.min(e.clientY, innerHeight - 270) + 'px';
+    ctxMenu.classList.add('on');
+  });
+  addEventListener('click', e => { if (!e.target.closest('#ctxMenu')) ctxMenu.classList.remove('on'); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') ctxMenu.classList.remove('on'); });
+  ctxMenu.addEventListener('click', e => {
+    const b = e.target.closest('[data-ctx]');
+    if (!b) return;
+    ctxMenu.classList.remove('on');
+    const act = b.dataset.ctx;
+    if (act === 'back') { scrollTo({ top: 0, behavior: 'smooth' }); toast('Welkom in 1743. Sokken bestaan nog niet. Pas op uw voeten.'); }
+    if (act === 'copy') toast('Gekopieerd naar linkersok. Rechtersok is jaloers.');
+    if (act === 'paste') toast('Geplakt. Het gaat er niet meer af.');
+    if (act === 'sit') {
+      document.body.classList.add('tilted');
+      toast('De pagina zit nu even. Ze staat zo weer op.');
+      setTimeout(() => document.body.classList.remove('tilted'), 2500);
+    }
+    if (act === 'inspect') toast('Bij nadere inspectie: het is wol. Helemaal tot onderaan.');
+    if (act === 'normal') toast('Het normale menu is met vakantie. Houd Shift ingedrukt om het te bellen.');
+  });
+
+  /* ---------------- Assistant "Sokkie" ---------------- */
+  const sokkie = $('#sokkie');
+  const tips = [
+    ['Het lijkt erop dat u een website bekijkt. Wilt u hulp met kijken?',
+      [['Ja', 'Kijk met beide ogen. Graag gedaan.'], ['Nee', 'Begrepen. Ik blijf gewoon hier. Kijkend.']]],
+    ['Tip: als u scrolt, beweegt de website. Dat is geen beving. Meestal.',
+      [['Bedankt', 'Graag gedaan. Dat was mijn enige tip.']]],
+    ['Wist u dat u kunt rechtsklikken? Doe het. Doe het nu.',
+      [['Oké', 'Ik wacht.'], ['Liever niet', 'Dat respecteer ik niet, maar ik accepteer het.']]],
+    ['Het lijkt erop dat u knippert. Wilt u dat ik dat voor u overneem?',
+      [['Ja', 'Ik knipper nu voor u. U mag uw ogen open laten.'], ['Nee', 'Dan knippert u maar alleen.']]],
+    ['Ik ben Sokkie, uw assistent. Ik heb geen functie. Ik ben hier voor het gevoel.',
+      [['Fijn', '❤']]],
+  ];
+  let tipIdx = 0, closeTries = 0, sokkieTimer;
+  function showTip() {
+    const [text, acts] = tips[tipIdx++ % tips.length];
+    $('#sokkieText').textContent = text;
+    const box = $('#sokkieActs');
+    box.innerHTML = '';
+    acts.forEach(([label, reply]) => {
+      const b = document.createElement('button');
+      b.textContent = label;
+      b.addEventListener('click', () => { $('#sokkieText').textContent = reply; box.innerHTML = ''; });
+      box.appendChild(b);
+    });
+    sokkie.classList.add('on');
+  }
+  function scheduleSokkie(ms) {
+    clearTimeout(sokkieTimer);
+    sokkieTimer = setTimeout(() => { showTip(); scheduleSokkie(22000); }, ms);
+  }
+  $('#sokkieClose').addEventListener('click', () => {
+    closeTries++;
+    if (closeTries % 2 === 1) {
+      $('#sokkieText').textContent = 'Weet u het zeker? Ik heb niemand anders. Klik nog eens als u het meent.';
+      $('#sokkieActs').innerHTML = '';
+      return;
+    }
+    sokkie.classList.remove('on');
+    clearTimeout(sokkieTimer);
+    sokkieTimer = setTimeout(() => {
+      $('#sokkieText').textContent = 'Ik ben terug. Ik heb niks gemist. Wel u.';
+      $('#sokkieActs').innerHTML = '';
+      sokkie.classList.add('on');
+      scheduleSokkie(25000);
+    }, 45000);
+  });
+  // Sokkie waits politely until the consent box is gone
+  const waitConsent = setInterval(() => {
+    if (!document.getElementById('consent')) { clearInterval(waitConsent); scheduleSokkie(4000); }
+  }, 500);
 })();
 </script>
 </body>
