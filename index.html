@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sokpop Seismologisch Instituut</title>
+<meta name="description" content="Het Koninklijk Instituut voor Sokpopseismologie meet sinds 1743 de aardbevingen die door sokpoppen worden veroorzaakt.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧦</text></svg>">
+<style>
+:root {
+  --paper: #f4ecd8;
+  --paper-2: #ebe0c4;
+  --ink: #2a2118;
+  --ink-soft: #6b5d4b;
+  --rule: #c9b98f;
+  --red: #b3261e;
+  --wool: #7a4fa0;
+  --green: #2f6b3a;
+  --card: #fbf6e9;
+  --shadow: rgba(42, 33, 24, .18);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #1c1814;
+    --paper-2: #26201a;
+    --ink: #efe4cc;
+    --ink-soft: #b3a68c;
+    --rule: #4a3f31;
+    --red: #ff6b5e;
+    --wool: #c79cf0;
+    --green: #7fcf8c;
+    --card: #231d17;
+    --shadow: rgba(0, 0, 0, .5);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1c1814; --paper-2: #26201a; --ink: #efe4cc; --ink-soft: #b3a68c;
+  --rule: #4a3f31; --red: #ff6b5e; --wool: #c79cf0; --green: #7fcf8c;
+  --card: #231d17; --shadow: rgba(0, 0, 0, .5);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; overflow-x: hidden; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.55;
+  transition: transform .3s;
+}
+a { color: var(--wool); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* ---------- Header ---------- */
+header.masthead {
+  border-bottom: 3px double var(--ink);
+  padding: 28px 0 18px;
+  text-align: center;
+  position: relative;
+}
+.crest {
+  font-size: 56px;
+  display: inline-block;
+  animation: crest-wobble 6s ease-in-out infinite;
+  cursor: help;
+}
+@keyframes crest-wobble {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg) scaleX(-1); }
+}
+h1 {
+  font-variant: small-caps;
+  letter-spacing: .04em;
+  font-size: clamp(26px, 5vw, 46px);
+  margin: 6px 0 2px;
+  line-height: 1.1;
+}
+.motto { font-style: italic; color: var(--ink-soft); margin: 0; }
+.motto small { display: block; font-size: 12px; }
+.est {
+  font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--ink-soft); margin-top: 10px;
+}
+nav.toc {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px;
+  margin-top: 14px; font-size: 14px;
+}
+nav.toc a { text-decoration: none; border-bottom: 1px dotted currentColor; }
+
+/* ---------- Ticker ---------- */
+.ticker {
+  background: var(--ink); color: var(--paper);
+  overflow: hidden; white-space: nowrap; font-size: 14px; padding: 6px 0;
+  font-family: "Courier New", monospace;
+}
+.ticker span {
+  display: inline-block; padding-left: 100%;
+  animation: tick 70s linear infinite;
+}
+@keyframes tick { to { transform: translateX(-100%); } }
+
+/* ---------- Layout ---------- */
+section { padding: 34px 0 10px; }
+h2 {
+  font-variant: small-caps; font-size: 28px; margin: 0 0 4px;
+  border-bottom: 1px solid var(--rule); padding-bottom: 4px;
+}
+h2 .num { color: var(--red); font-size: 18px; margin-right: 8px; }
+.lede { color: var(--ink-soft); font-style: italic; margin-top: 4px; }
+.grid { display: grid; gap: 18px; }
+@media (min-width: 760px) {
+  .grid-2 { grid-template-columns: 1.4fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: 3px 3px 0 var(--shadow);
+  padding: 16px;
+  position: relative;
+}
+.stamp {
+  position: absolute; top: 10px; right: 10px;
+  border: 2px solid var(--red); color: var(--red);
+  font-family: "Courier New", monospace; font-weight: bold; font-size: 11px;
+  padding: 2px 6px; transform: rotate(8deg); text-transform: uppercase;
+  opacity: .8; pointer-events: none;
+}
+button, input, select {
+  font: inherit; color: var(--ink);
+}
+button {
+  background: var(--paper-2); border: 1px solid var(--ink);
+  padding: 8px 14px; cursor: pointer; box-shadow: 2px 2px 0 var(--ink);
+}
+button:active { transform: translate(2px, 2px); box-shadow: none; }
+input[type=range] { accent-color: var(--wool); padding: 0; }
+input, select {
+  background: var(--paper); border: 1px solid var(--ink-soft);
+  padding: 8px; width: 100%;
+}
+label { font-size: 14px; display: block; margin: 10px 0 4px; }
+.mono { font-family: "Courier New", monospace; }
+
+/* ---------- Seismograph ---------- */
+.seismo-wrap { position: relative; }
+canvas#seismo {
+  width: 100%; height: 220px; display: block;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 21px, var(--rule) 21px 22px),
+    var(--card);
+  border: 1px solid var(--ink);
+}
+.readout {
+  display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 10px;
+  font-family: "Courier New", monospace; font-size: 14px;
+}
+.readout b { font-size: 22px; color: var(--red); }
+.hint { font-size: 13px; color: var(--ink-soft); }
+
+/* ---------- Puppet ---------- */
+.puppet-stage {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  min-height: 300px;
+}
+#puppet { width: 190px; height: 260px; cursor: pointer; user-select: none; }
+#puppet .mouth { transition: transform .08s; transform-origin: 95px 150px; }
+#puppet.talking .mouth { animation: chatter .18s infinite alternate; }
+@keyframes chatter { from { transform: scaleY(.25); } to { transform: scaleY(1.3); } }
+#puppet:focus:not(:focus-visible) { outline: none; }
+#puppet:hover .body { filter: brightness(1.08); }
+.bubble {
+  background: var(--card); border: 2px solid var(--ink); border-radius: 18px;
+  padding: 10px 14px; max-width: 290px; min-height: 48px; position: relative;
+  margin-bottom: 14px; font-size: 15px; text-align: center;
+}
+.bubble::after {
+  content: ""; position: absolute; bottom: -12px; left: 50%;
+  border: 10px solid transparent; border-top-color: var(--ink); transform: translateX(-50%);
+  border-bottom: 0;
+}
+
+/* ---------- Quake ---------- */
+@keyframes quake {
+  0% { transform: translate(0, 0) rotate(0); }
+  20% { transform: translate(-6px, 3px) rotate(-.6deg); }
+  40% { transform: translate(5px, -4px) rotate(.5deg); }
+  60% { transform: translate(-4px, -2px) rotate(-.3deg); }
+  80% { transform: translate(6px, 4px) rotate(.6deg); }
+  100% { transform: translate(0, 0) rotate(0); }
+}
+body.quaking main, body.quaking header { animation: quake .25s linear infinite; }
+.alarm {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  background: var(--red); color: #fff; text-align: center;
+  font-family: "Courier New", monospace; font-weight: bold; padding: 10px 16px;
+  transform: translateY(-110%); transition: transform .25s;
+}
+.alarm.on { transform: translateY(0); }
+
+/* ---------- Register ---------- */
+.dossier {
+  margin-top: 14px; font-family: "Courier New", monospace; font-size: 14px;
+  white-space: pre-wrap; border-top: 1px dashed var(--ink-soft); padding-top: 10px;
+  min-height: 1em;
+}
+
+.pie-svg { max-width: 260px; display: block; margin: 0 auto; animation: spin 120s linear infinite; }
+
+/* ---------- Translator ---------- */
+.translation { font-size: 20px; min-height: 2em; color: var(--wool); word-break: break-word; }
+
+/* ---------- Forecast ---------- */
+.forecast { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.day { text-align: center; padding: 12px 8px; }
+.day .icon { font-size: 34px; display: block; }
+.day .t { font-size: 22px; font-weight: bold; }
+.day small { color: var(--ink-soft); display: block; }
+.drum {
+  width: 70px; height: 70px; border-radius: 50%; border: 6px solid var(--ink-soft);
+  margin: 0 auto 6px; display: grid; place-items: center; font-size: 26px;
+  animation: spin 2.4s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Testimonials ---------- */
+blockquote { margin: 0; font-style: italic; }
+blockquote footer { font-style: normal; font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+
+/* ---------- Oracle ---------- */
+.socks { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+.socks button { font-size: 28px; padding: 6px 12px; }
+.prophecy { font-size: 18px; font-style: italic; min-height: 3em; }
+
+/* ---------- Big button ---------- */
+.danger {
+  background: var(--red); color: #fff; border-color: #000; font-weight: bold;
+  font-size: 18px; padding: 14px 22px; border-radius: 999px; box-shadow: 0 6px 0 #5c120d;
+}
+.danger:active { transform: translateY(6px); box-shadow: none; }
+body.flipped { transform: rotate(180deg); }
+body.tilted { transform: rotate(-2.5deg); }
+
+/* ---------- Cookie / sock consent ---------- */
+.consent {
+  position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 40;
+  max-width: 520px; margin: 0 auto;
+  background: var(--card); border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
+  padding: 16px;
+}
+.consent h3 { margin: 0 0 6px; font-variant: small-caps; }
+.consent .btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; position: relative; min-height: 44px; }
+#refuse { position: relative; transition: transform .15s; }
+
+/* ---------- Footer ---------- */
+footer.site {
+  margin-top: 40px; border-top: 3px double var(--ink); padding: 20px 0 120px;
+  font-size: 13px; color: var(--ink-soft); text-align: center;
+}
+.counter {
+  display: inline-block; background: #000; color: #3f3; padding: 2px 8px;
+  font-family: "Courier New", monospace; letter-spacing: .1em;
+}
+
+.controls {
+  position: absolute; top: 12px; right: 16px; display: flex; gap: 6px; flex-wrap: wrap;
+  justify-content: flex-end; max-width: 50%;
+}
+.controls button { font-size: 12px; padding: 4px 8px; }
+@media (max-width: 600px) {
+  .controls { position: static; max-width: none; justify-content: center; margin-bottom: 8px; }
+}
+
+/* Extra themes: Dinsdag & Binnenkant van een sok */
+:root[data-theme="dinsdag"] {
+  --paper: #fff36b; --paper-2: #ff9de2; --ink: #1d0a6b; --ink-soft: #6a2fb8;
+  --rule: #ff5fa2; --red: #e8007a; --wool: #0a7d6c; --green: #0a7d6c;
+  --card: #b6ffd9; --shadow: #ff5fa2;
+}
+:root[data-theme="dinsdag"] body { font-family: "Comic Sans MS", "Comic Neue", cursive; }
+:root[data-theme="sok"] {
+  --paper: #3a1f17; --paper-2: #4b2a1f; --ink: #f2c9a0; --ink-soft: #c0906a;
+  --rule: #6b3b2a; --red: #ff9b6b; --wool: #ffc48a; --green: #ffc48a;
+  --card: #45261c; --shadow: rgba(0,0,0,.6);
+}
+:root[data-theme="sok"] body { text-shadow: 0 0 3px currentColor; letter-spacing: .02em; }
+:root[data-theme="sok"] main { filter: blur(.4px); }
+
+/* Sock scrollbar & selection */
+html { scrollbar-color: var(--red) var(--paper-2); }
+::-webkit-scrollbar { width: 16px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb {
+  background: repeating-linear-gradient(0deg, var(--red) 0 8px, var(--paper) 8px 16px);
+  border-radius: 8px 8px 16px 4px; border: 2px solid var(--ink);
+}
+::selection { background: var(--wool); color: var(--paper); }
+
+/* Knitted reading progress */
+.progress {
+  position: fixed; top: 0; left: 0; height: 7px; z-index: 45; width: 0;
+  background: repeating-linear-gradient(90deg, var(--red) 0 10px, var(--wool) 10px 20px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.progress-label {
+  position: fixed; top: 9px; right: 8px; z-index: 45; font: 11px "Courier New", monospace;
+  background: var(--card); border: 1px solid var(--ink); padding: 1px 6px; pointer-events: none;
+}
+
+/* Loader */
+.loader {
+  position: fixed; inset: 0; z-index: 100; background: var(--paper); display: grid;
+  place-content: center; text-align: center; gap: 12px; cursor: pointer; transition: opacity .5s;
+  padding: 16px;
+}
+.loader .big { font-size: 64px; animation: spin 1.2s linear infinite; display: inline-block; }
+.loader .bar { width: min(320px, 80vw); height: 16px; border: 2px solid var(--ink); margin: 0 auto; }
+.loader .bar i {
+  display: block; height: 100%; width: 0;
+  background: repeating-linear-gradient(90deg, var(--red) 0 8px, var(--paper-2) 8px 16px);
+}
+.loader.gone { opacity: 0; pointer-events: none; }
+
+/* Sock cursor */
+.sock-cursor {
+  position: fixed; top: 0; left: 0; z-index: 90; pointer-events: none; font-size: 26px;
+  will-change: transform; display: none;
+}
+@media (pointer: fine) { .sock-cursor { display: block; } }
+
+/* Assistant "Sokkie" */
+.sokkie {
+  position: fixed; left: 16px; bottom: 16px; z-index: 35; width: 270px; max-width: calc(100vw - 32px);
+  background: var(--card); border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+  padding: 12px 12px 10px 64px; font-size: 14px; transform: translateY(160%);
+  transition: transform .4s cubic-bezier(.3, 1.6, .5, 1);
+}
+.sokkie.on { transform: translateY(0); }
+.sokkie .face { position: absolute; left: 8px; top: 10px; font-size: 40px; animation: crest-wobble 3s infinite; }
+.sokkie .x { position: absolute; top: 2px; right: 4px; border: 0; box-shadow: none; background: none; padding: 2px 6px; }
+.sokkie .acts { display: flex; gap: 6px; margin-top: 8px; }
+.sokkie .acts button { font-size: 12px; padding: 3px 8px; }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; top: 40px; z-index: 95; transform: translate(-50%, -20px);
+  background: var(--ink); color: var(--paper); padding: 10px 16px; font-size: 14px;
+  max-width: calc(100vw - 32px); opacity: 0; transition: .3s; pointer-events: none; text-align: center;
+}
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* Context menu */
+.ctx {
+  position: fixed; z-index: 96; background: var(--card); border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink); min-width: 230px; padding: 4px 0; display: none;
+  font-size: 14px; transform: rotate(-1.5deg);
+}
+.ctx.on { display: block; }
+.ctx button {
+  display: block; width: 100%; text-align: left; border: 0; box-shadow: none; background: none; padding: 7px 14px;
+}
+.ctx button:hover { background: var(--paper-2); }
+.ctx hr { border: 0; border-top: 1px dashed var(--rule); margin: 4px 0; }
+
+/* CAPTCHA modal */
+.modal-bg {
+  position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.5); display: none;
+  place-items: center; padding: 16px;
+}
+.modal-bg.on { display: grid; }
+.modal { background: var(--card); border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); padding: 16px; width: min(360px, 100%); }
+.modal h3 { margin: 0 0 4px; font-variant: small-caps; }
+.captcha-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0; }
+.captcha-grid button { font-size: 34px; padding: 10px 0; box-shadow: none; }
+.captcha-grid button.sel { outline: 4px solid var(--wool); outline-offset: -4px; background: var(--paper); }
+.captcha-msg { min-height: 2.6em; font-size: 14px; color: var(--red); }
+
+/* Upside-down section */
+.upside { transform: rotate(180deg); transition: transform .6s cubic-bezier(.5, -0.5, .5, 1.5); }
+
+/* Middle button */
+.to-middle {
+  position: fixed; right: 16px; bottom: 16px; z-index: 34; border-radius: 999px;
+  font-size: 13px; padding: 8px 12px;
+}
+
+/* Shy button */
+#bigButton { transition: transform .2s; }
+
+@media (max-width: 600px) { .sokkie { bottom: 72px; } }
+
+.charcount { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0s !important; animation-iteration-count: 1 !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader" title="Klik om ongeduldig te zijn">
+  <div><span class="big">🧦</span></div>
+  <div id="loaderText">Wol wordt voorverwarmd…</div>
+  <div class="bar"><i id="loaderBar"></i></div>
+  <div class="mono" id="loaderPct">0%</div>
+  <small style="color:var(--ink-soft)">(klik om ongeduldig te zijn)</small>
+</div>
+<div class="progress" id="progress"></div>
+<div class="progress-label" id="progressLabel">Nog 104% te gaan</div>
+<div class="sock-cursor" id="sockCursor" aria-hidden="true">🧦</div>
+<div class="toast" id="toast" role="status"></div>
+
+<div class="alarm" id="alarm" role="alert">⚠ WOLBEVING GEDETECTEERD ⚠ Ga onder een stevige wasmand staan</div>
+
+<header class="masthead">
+  <div class="wrap" style="position:relative">
+    <div class="controls">
+      <button id="fontBigger" title="Maakt de tekst groter. Waarschijnlijk.">A+</button>
+      <button id="fontSmaller" title="Maakt de tekst kleiner. Misschien.">A−</button>
+      <button id="fontSock" title="Maakt de tekst sok.">A🧦</button>
+      <button id="themeToggle" title="Wissel van dagdeel">☀ Dag</button>
+    </div>
+    <div class="crest" id="crest" title="Ons wapen. Het is een sok. Het is altijd een sok geweest.">🧦</div>
+    <h1>Koninklijk Instituut voor<br>Sokpopseismologie</h1>
+    <p class="motto">“Lana tremit, mundus audit.”<small>De wol beeft, de wereld luistert.</small></p>
+    <div class="est">Opgericht 1743 · twaalf jaar vóór de uitvinding van de sok</div>
+    <nav class="toc" aria-label="Inhoud">
+      <a href="#meting">I. Live meting</a>
+      <a href="#register">II. Verloren-Sokkenregister</a>
+      <a href="#weer">III. Trommelweerbericht</a>
+      <a href="#getuigen">IV. Getuigenissen</a>
+      <a href="#orakel">V. Het Orakel</a>
+      <a href="#tolk">VI. De Tolk</a>
+      <a href="#knop">VII. De Knop</a>
+    </nav>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true"><span id="tickerText"></span></div>
+
+<main class="wrap">
+
+  <section id="meting">
+    <h2><span class="num">I.</span>Live Wolseismografie</h2>
+    <p class="lede">Onze sensoren registreren elke trilling die door een sokpop in het universum wordt veroorzaakt. Ook die van u. Vooral die van u.</p>
+    <div class="grid grid-2">
+      <div class="card seismo-wrap">
+        <span class="stamp">Live · ongeveer</span>
+        <canvas id="seismo" aria-label="Seismograaf van sokpopactiviteit"></canvas>
+        <div class="readout">
+          <div>Wolschaal: <b id="mag">0.0</b></div>
+          <div>Epicentrum: <span id="epi">—</span></div>
+          <div>Status: <span id="status">Rustig gebreid</span></div>
+        </div>
+        <p class="hint">Klik op Professor Hielke of beweeg uw muis heftig om bij te dragen aan de wetenschap. Bij 7.0 op de Wolschaal gaan de alarmbellen af.</p>
+      </div>
+      <div class="card puppet-stage">
+        <span class="stamp">Hoofdonderzoeker</span>
+        <div class="bubble" id="bubble">Goedendag. Ik ben Prof. dr. H. Hielke, sokpop. Prik mij.</div>
+        <svg id="puppet" viewBox="0 0 190 260" role="button" aria-label="Professor Hielke, de sokpop. Klik om hem te laten praten." tabindex="0">
+          <defs>
+            <pattern id="stripes" width="190" height="24" patternUnits="userSpaceOnUse">
+              <rect width="190" height="12" fill="#c0392b"/>
+              <rect y="12" width="190" height="12" fill="#e8d7a8"/>
+            </pattern>
+          </defs>
+          <!-- arm / cuff -->
+          <path class="body" d="M55 260 L60 150 Q20 140 25 85 Q30 25 95 20 Q165 20 168 85 Q170 140 130 150 L135 260 Z" fill="url(#stripes)" stroke="#2a2118" stroke-width="3"/>
+          <rect x="52" y="225" width="86" height="35" fill="#7a4fa0" stroke="#2a2118" stroke-width="3"/>
+          <!-- mouth -->
+          <g class="mouth">
+            <ellipse cx="95" cy="150" rx="42" ry="14" fill="#5c120d" stroke="#2a2118" stroke-width="3"/>
+            <ellipse cx="95" cy="156" rx="18" ry="5" fill="#e57373"/>
+          </g>
+          <!-- eyes -->
+          <g>
+            <circle cx="68" cy="78" r="22" fill="#fff" stroke="#2a2118" stroke-width="3"/>
+            <circle id="pupilL" cx="68" cy="78" r="9" fill="#111"/>
+            <circle cx="124" cy="70" r="27" fill="#fff" stroke="#2a2118" stroke-width="3"/>
+            <circle id="pupilR" cx="124" cy="70" r="11" fill="#111"/>
+          </g>
+          <!-- monocle -->
+          <circle cx="124" cy="70" r="31" fill="none" stroke="#c9a227" stroke-width="3"/>
+          <path d="M155 74 Q170 120 150 175" fill="none" stroke="#c9a227" stroke-width="2"/>
+          <!-- hair tuft -->
+          <path d="M80 22 q5 -18 15 -2 q6 -16 14 0 q8 -14 12 4" fill="none" stroke="#2a2118" stroke-width="3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="register">
+    <h2><span class="num">II.</span>Nationaal Verloren-Sokkenregister</h2>
+    <p class="lede">Elk jaar verdwijnen er 84 miljoen sokken in Nederland. Wij weten waar ze heen gaan. Wij mogen het niet zeggen.</p>
+    <div class="grid grid-2">
+      <form class="card" id="lostForm" autocomplete="off">
+        <span class="stamp">Formulier 7B-Wol</span>
+        <label for="sockDesc">Omschrijving van de sok</label>
+        <input id="sockDesc" required placeholder="bv. grijs, licht teleurgesteld, maat 43">
+        <div class="charcount" id="charcount">Maximaal 3 tekens. Kies ze zorgvuldig.</div>
+        <label for="sockWhen">Laatst gezien</label>
+        <select id="sockWhen">
+          <option>In de wasmachine</option>
+          <option>Aan mijn voet (de linker)</option>
+          <option>In een droom</option>
+          <option>Op de bodem van een wasmand die geen bodem heeft</option>
+          <option>Ik heb hem nooit gekend, ik mis hem toch</option>
+        </select>
+        <label for="sockMood">Emotionele band (1 – 11)</label>
+        <input id="sockMood" type="range" min="1" max="11" value="6">
+        <p style="margin-top:14px"><button type="submit">Dossier indienen</button></p>
+        <div class="dossier" id="dossier" aria-live="polite"></div>
+      </form>
+      <div class="card">
+        <span class="stamp">Statistiek</span>
+        <h3 style="margin-top:0">Waar gaan sokken heen?</h3>
+        <p class="hint" style="margin-top:0">Gevalideerd door onze afdeling Kwantitatieve Wol (bestaande uit één wollen muts).</p>
+        <svg viewBox="0 0 220 220" width="100%" class="pie-svg" aria-label="Taartdiagram van verdwijnbestemmingen">
+          <g id="pie" transform="translate(110 110)"></g>
+        </svg>
+        <ul id="pieLegend" style="list-style:none;padding:0;font-size:14px"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="weer">
+    <h2><span class="num">III.</span>Trommelweerbericht</h2>
+    <p class="lede">Het weer zoals het is in de trommel van uw wasmachine. Voor buiten raadpleegt u maar een ander instituut.</p>
+    <div class="forecast" id="forecast"></div>
+  </section>
+
+  <section id="getuigen">
+    <h2><span class="num">IV.</span>Getuigenissen</h2>
+    <p class="lede">Wat onze cliënten over ons zeggen. Wij hebben ze niet betaald. Het zijn objecten.</p>
+    <p><button id="rotateBtn">↻ Draai deze sectie 90°</button> <span class="hint">Deze sectie is per ongeluk ondersteboven gedrukt. Excuses aan de drukker.</span></p>
+    <div class="grid grid-3 upside" id="upside">
+      <div class="card"><blockquote>“Sinds het Instituut mij heeft gekalibreerd, voel ik elke sokpop op drie kilometer afstand. Ik slaap niet meer. Vijf sterren.”<footer>— Een radiator, Apeldoorn</footer></blockquote></div>
+      <div class="card"><blockquote>“Ik was erbij tijdens de Grote Beving van '98. Een kleuter deed een poppenkast. Halverwege Gouda zakte een kaas in.”<footer>— Het concept dinsdag</footer></blockquote></div>
+      <div class="card"><blockquote>“Ze vroegen of ik wilde getuigen. Ik ben een linkerschoen. Ik heb geen keus in wat dan ook.”<footer>— Linkerschoen, maat 44, ongehuwd</footer></blockquote></div>
+    </div>
+  </section>
+
+  <section id="orakel">
+    <h2><span class="num">V.</span>Het Sokkenorakel</h2>
+    <p class="lede">Kies een sok. De sok kiest terug.</p>
+    <div class="card">
+      <span class="stamp">Bindend advies</span>
+      <div class="socks" role="group" aria-label="Kies een sok">
+        <button data-sock="0" title="De rode">🧦</button>
+        <button data-sock="1" title="De onzichtbare" style="opacity:.15">🧦</button>
+        <button data-sock="2" title="De omgekeerde" style="transform:scaleY(-1)">🧦</button>
+        <button data-sock="3" title="De enorme" style="font-size:44px">🧦</button>
+        <button data-sock="4" title="De sok die er niet is">　</button>
+      </div>
+      <p class="prophecy" id="prophecy" aria-live="polite">Het orakel wacht. Het heeft geduld. Het heeft geen voeten.</p>
+    </div>
+  </section>
+
+  <section id="tolk">
+    <h2><span class="num">VI.</span>Sokpop-Tolk</h2>
+    <p class="lede">Sokpoppen spreken Sokpopisch, een taal zonder medeklinkers die er toch steeds bij komen. Typ iets. Wees voorzichtig: elke lettergreep is een kleine beving.</p>
+    <div class="card">
+      <span class="stamp">Beëdigd</span>
+      <label for="tolkIn">Uw zin in het Mensisch</label>
+      <input id="tolkIn" placeholder="bv. Waar is mijn andere sok?">
+      <p class="translation" id="tolkOut" aria-live="polite">Mmf hrrbl wol.</p>
+      <p class="hint" id="tolkNote">Vertaalzekerheid: 0%</p>
+    </div>
+  </section>
+
+  <section id="knop">
+    <h2><span class="num">VII.</span>De Knop</h2>
+    <p class="lede">Om veiligheidsredenen verzoeken wij u vriendelijk deze knop niet in te drukken.</p>
+    <div class="card" style="text-align:center">
+      <button class="danger" id="bigButton">NIET INDRUKKEN</button>
+      <p id="buttonMsg" aria-live="polite" style="min-height:3em;margin-top:18px"></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p>U bent bezoeker nummer <span class="counter" id="counter">000000</span> · het getal daalt, dat is normaal</p>
+    <p>Dit instituut is geaccrediteerd door de Raad van Linkervoeten en de Stichting Wollige Waarheid.<br>
+    Alle metingen zijn exact, behalve die welke dat niet zijn. Geen sokpoppen werden beschadigd, wel enkele seismologen.</p>
+    <p>© 1743–<span id="year"></span>–1743 · <a href="#" id="secret">Klik hier niet</a></p>
+  </div>
+</footer>
+
+<div class="sokkie" id="sokkie" role="complementary" aria-label="Assistent Sokkie">
+  <div class="face" aria-hidden="true">🧦</div>
+  <button class="x" id="sokkieClose" aria-label="Sokkie sluiten">×</button>
+  <div id="sokkieText"></div>
+  <div class="acts" id="sokkieActs"></div>
+</div>
+
+<button class="to-middle" id="toMiddle">⇕ Naar het midden</button>
+
+<div class="ctx" id="ctxMenu" role="menu">
+  <button data-ctx="back">← Terug (naar 1743)</button>
+  <button data-ctx="copy">⧉ Kopiëren naar linkersok</button>
+  <button data-ctx="paste">📋 Plakken (met lijm)</button>
+  <hr>
+  <button data-ctx="sit">🪑 Pagina even laten zitten</button>
+  <button data-ctx="inspect">🔍 Inspecteren (met vergrootglas)</button>
+  <hr>
+  <button data-ctx="normal">Normaal menu tonen</button>
+</div>
+
+<div class="modal-bg" id="captcha" role="dialog" aria-modal="true" aria-labelledby="captchaTitle">
+  <div class="modal">
+    <h3 id="captchaTitle">Bent u een voet?</h3>
+    <p style="margin:0;font-size:14px">Selecteer alle vakjes met een <b>sok</b>. Kousen tellen niet. Kousen weten dat.</p>
+    <div class="captcha-grid" id="captchaGrid"></div>
+    <div class="captcha-msg" id="captchaMsg" aria-live="polite"></div>
+    <div style="display:flex;gap:8px;justify-content:space-between">
+      <button id="captchaCancel">Ik ben een hand</button>
+      <button id="captchaOk">Verifiëren</button>
+    </div>
+  </div>
+</div>
+
+<div class="consent" id="consent" role="dialog" aria-labelledby="consentTitle">
+  <h3 id="consentTitle">Wij gebruiken sokken 🧦</h3>
+  <p style="margin:0;font-size:14px">Om uw ervaring te verbeteren, plaatsen wij sokken op uw apparaat. Sommige zijn noodzakelijk, andere zijn gewoon gezellig. Door verder te gaan, gaat u akkoord met het gedragen worden door een voet.</p>
+  <div class="btns">
+    <button id="accept">Ja, sok mij</button>
+    <button id="refuse">Weigeren</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  /* ---------------- Theme ---------------- */
+  const themes = [['light', '☀ Dag'], ['dark', '☾ Nacht'], ['dinsdag', '🦆 Dinsdag'], ['sok', '🧦 Binnenkant sok']];
+  let themeIdx = matchMedia('(prefers-color-scheme: dark)').matches ? 1 : 0;
+  $('#themeToggle').textContent = themes[themeIdx][1];
+  $('#themeToggle').addEventListener('click', () => {
+    themeIdx = (themeIdx + 1) % themes.length;
+    document.documentElement.dataset.theme = themes[themeIdx][0];
+    $('#themeToggle').textContent = themes[themeIdx][1];
+    if (themes[themeIdx][0] === 'dinsdag') toast('Het is nu dinsdag. Voor iedereen. Sorry.');
+    if (themes[themeIdx][0] === 'sok') toast('U bevindt zich nu in een sok. Het ruikt hier naar wetenschap.');
+  });
+
+  /* ---------------- Toast ---------------- */
+  let toastTimer;
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('on'), 2800);
+  }
+
+  /* ---------------- Loader ---------------- */
+  (() => {
+    const loader = $('#loader');
+    let pct = 0, done = false;
+    const msgs = ['Wol wordt voorverwarmd…', 'Sokken worden gepaard…', 'Eén sok kwijt, zoeken…', 'Hielke wordt wakker gemaakt…', 'Nog één steek…'];
+    function finish() {
+      if (done) return;
+      done = true;
+      $('#loaderPct').textContent = '104%';
+      $('#loaderBar').style.width = '100%';
+      $('#loaderText').textContent = 'Klaar. Iets te klaar.';
+      setTimeout(() => { loader.classList.add('gone'); setTimeout(() => loader.remove(), 500); }, 350);
+    }
+    const iv = setInterval(() => {
+      if (done) return clearInterval(iv);
+      pct = pct < 99 ? Math.min(99, pct + rand(3, 14)) : pct;
+      if (pct >= 99) { pct = 99; }
+      $('#loaderBar').style.width = pct + '%';
+      $('#loaderPct').textContent = Math.floor(pct) + '%';
+      $('#loaderText').textContent = msgs[Math.min(msgs.length - 1, Math.floor(pct / 22))];
+    }, 120);
+    setTimeout(finish, 2600);
+    loader.addEventListener('click', () => { toast('Ongeduld genoteerd in uw dossier.'); finish(); });
+  })();
+
+  /* ---------------- Font size (works the wrong way round) ---------------- */
+  let zoom = 1;
+  function setZoom(z) {
+    zoom = Math.max(0.6, Math.min(1.6, z));
+    $('main').style.zoom = zoom;
+  }
+  $('#fontBigger').addEventListener('click', () => { setZoom(zoom - 0.1); toast('Groter gemaakt. Vanuit het perspectief van de tekst.'); });
+  $('#fontSmaller').addEventListener('click', () => { setZoom(zoom + 0.1); toast('Kleiner gemaakt. U zit gewoon dichter bij uw scherm nu.'); });
+  $('#fontSock').addEventListener('click', () => {
+    setZoom(rand(0.75, 1.35));
+    document.querySelectorAll('main h2').forEach(h => { h.style.transform = `rotate(${rand(-3, 3)}deg)`; });
+    toast('De tekst is nu sok. Wij weten ook niet wat dat betekent.');
+  });
+
+  /* ---------------- Reading progress (knitted, overshoots) ---------------- */
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const f = max > 0 ? scrollY / max : 0;
+    $('#progress').style.width = (f * 100) + '%';
+    const left = Math.round((1 - f) * 104);
+    $('#progressLabel').textContent = left > 0 ? `Nog ${left}% te gaan` : 'U bent te ver. Ga 4% terug.';
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------------- Sock cursor (lags behind, has feelings) ---------------- */
+  (() => {
+    const c = $('#sockCursor');
+    let tx = -100, ty = -100, x = -100, y = -100, ang = 0;
+    addEventListener('pointermove', e => { tx = e.clientX + 14; ty = e.clientY + 14; });
+    (function loop() {
+      const dx = tx - x, dy = ty - y;
+      x += dx * 0.09; y += dy * 0.09;
+      ang += (Math.max(-60, Math.min(60, dx * 0.8)) - ang) * 0.15;
+      c.style.transform = `translate(${x}px, ${y}px) rotate(${ang}deg)`;
+      requestAnimationFrame(loop);
+    })();
+  })();
+
+  /* ---------------- Nav shuffles when you look at it ---------------- */
+  const navLinks = [...document.querySelectorAll('nav.toc a')];
+  $('nav.toc').addEventListener('pointerenter', e => {
+    if (e.pointerType !== 'mouse') return;
+    navLinks.forEach(a => { a.style.order = Math.floor(rand(0, 20)); });
+  });
+
+  /* ---------------- Ticker ---------------- */
+  const news = [
+    'LAATSTE NIEUWS: Sokpop in Zwolle zegt "hallo" — beving van 3.2 gevoeld tot in Meppel',
+    'Wetenschappers bevestigen: tenen zijn eigenlijk vijf kleine sokpoppen zonder sok',
+    'Minister van Wol treedt af na schandaal rond synthetische vezels',
+    'Verloren sok na 14 jaar teruggevonden in parallel universum; weigert terug te komen',
+    'Weerbericht: morgen kans op een pluisje',
+    'Onderzoek: 9 op de 10 sokpoppen zijn eigenlijk één sokpop die heel snel beweegt',
+    'Breaking: knoop in breiwerk blijkt de oorzaak van de Middeleeuwen',
+    'Professor Hielke wint Nobelprijs voor Natte Wol, niemand weet wat dat is',
+  ];
+  $('#tickerText').textContent = news.join('   ✦   ');
+
+  /* ---------------- Seismograph ---------------- */
+  const cv = $('#seismo');
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    const r = cv.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  addEventListener('resize', resize);
+
+  const samples = [];
+  let energy = 0.4;      // current tremor energy
+  let peak = 0;
+  let quakeUntil = 0;
+  const epicenters = ['Zuid-Linkervoet', 'De Wasmand', 'Onder de bank', 'Tilburg (de sokkenla)',
+    'Het niets tussen twee tenen', 'Breiwerk-Noord', 'Uw broekzak', 'Een poppenkast in Emmen'];
+
+  function addEnergy(e) {
+    energy = Math.min(energy + e, 12);
+    if (e > 0.8) $('#epi').textContent = pick(epicenters);
+  }
+
+  function inkColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function draw() {
+    const t = performance.now();
+    energy = Math.max(0.35, energy * 0.994);
+    const amp = energy * (H / 26);
+    const v = (Math.sin(t / 90) * 0.3 + (Math.random() - 0.5)) * amp;
+    samples.push(v);
+    const maxN = Math.ceil(W / 2);
+    while (samples.length > maxN) samples.shift();
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = inkColor('--red');
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    for (let i = 0; i < samples.length; i++) {
+      const x = W - (samples.length - i) * 2;
+      const y = H / 2 + Math.max(-H / 2 + 2, Math.min(H / 2 - 2, samples[i]));
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke();
+    // stylus
+    ctx.fillStyle = inkColor('--ink');
+    const last = samples[samples.length - 1] || 0;
+    ctx.beginPath();
+    ctx.arc(W - 2, H / 2 + Math.max(-H / 2 + 2, Math.min(H / 2 - 2, last)), 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    const mag = Math.min(9.9, energy * 0.85);
+    $('#mag').textContent = mag.toFixed(1);
+    $('#status').textContent =
+      mag < 1 ? 'Rustig gebreid' :
+      mag < 3 ? 'Lichte pluizing' :
+      mag < 5 ? 'Merkbare frommeling' :
+      mag < 7 ? 'Ernstige kriebel' : 'TOTALE WOLLIGHEID';
+
+    if (mag >= 7 && t > quakeUntil) {
+      quakeUntil = t + 2600;
+      document.body.classList.add('quaking');
+      $('#alarm').classList.add('on');
+      setTimeout(() => {
+        document.body.classList.remove('quaking');
+        $('#alarm').classList.remove('on');
+      }, 2600);
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  // Mouse shaking adds energy
+  let lastX = 0, lastY = 0, lastT = 0;
+  addEventListener('pointermove', e => {
+    const now = performance.now();
+    const dt = Math.max(now - lastT, 1);
+    const speed = Math.hypot(e.clientX - lastX, e.clientY - lastY) / dt;
+    if (speed > 2.5) addEnergy((speed - 2.5) * 0.06);
+    lastX = e.clientX; lastY = e.clientY; lastT = now;
+    trackEyes(e.clientX, e.clientY);
+  });
+
+  /* ---------------- Puppet ---------------- */
+  const puppet = $('#puppet');
+  const pupils = [[$('#pupilL'), 68, 78, 9], [$('#pupilR'), 124, 70, 11]];
+  function trackEyes(cx, cy) {
+    const r = puppet.getBoundingClientRect();
+    const sx = 190 / r.width, sy = 260 / r.height;
+    for (const [el, ex, ey, max] of pupils) {
+      const dx = (cx - r.left) * sx - ex, dy = (cy - r.top) * sy - ey;
+      const d = Math.hypot(dx, dy) || 1;
+      const k = Math.min(max, d) / d;
+      el.setAttribute('cx', ex + dx * k);
+      el.setAttribute('cy', ey + dy * k);
+    }
+  }
+  const quotes = [
+    'Elke keer dat ik praat, verschuift Limburg een halve millimeter. Daarom fluister ik.',
+    'Ik heb geen benen. Toch sta ik achter mijn onderzoek.',
+    'Mijn moeder was een kniekous. Mijn vader een ovenwant. Het was ingewikkeld.',
+    'U voelt dat? Dat was een 4.1. U bent nu medeplichtig.',
+    'Er zit een hand in mij. Ik weet niet van wie. Ik vraag het niet meer.',
+    'De aarde is eigenlijk een hele grote sokpop. Kijk maar naar de vulkanen. Die praten.',
+    'Ik heb ooit een zin gezegd die zo lang was dat Zeeland nu een eiland minder heeft.',
+    'Onze financiering komt van het Ministerie van Ongepaarde Zaken.',
+    'Ik draag een monocle omdat mijn rechteroog wetenschappelijker is dan mijn linker.',
+    'Stilte is ook een beving. Een hele kleine. Die van binnen.',
+    'Wist u dat de Richterschaal is uitgevonden door een sok die Richter heette? Nee. Want het is niet waar.',
+    'Zeg het niet tegen de wasmachine, maar ik heb hem al jaren door.',
+  ];
+  let quoteIdx = Math.floor(Math.random() * quotes.length);
+  let talkTimer;
+  function talk() {
+    quoteIdx = (quoteIdx + 1 + Math.floor(Math.random() * (quotes.length - 1))) % quotes.length;
+    $('#bubble').textContent = quotes[quoteIdx];
+    puppet.classList.add('talking');
+    clearTimeout(talkTimer);
+    talkTimer = setTimeout(() => puppet.classList.remove('talking'), 1600);
+    addEnergy(rand(2.2, 4.2));
+  }
+  puppet.addEventListener('click', talk);
+  puppet.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); talk(); } });
+
+  /* ---------------- Lost sock register ---------------- */
+  const dimensions = ['Dimensie C-137 (de "Droger-dimensie")', 'Het Sokkenhiernamaals, vleugel B',
+    'Een la in Tilburg die alleen op schrikkeldagen opengaat', 'De binnenkant van een dekbedovertrek',
+    'Een parallel Nederland waar alles één maat te groot is'];
+  const officers = ['Mw. drs. P. Pluis', 'Dhr. K. Knoop (stagiair, 104 jaar)', 'De Kous Zonder Naam', 'Inspecteur Hielke (andere Hielke)'];
+  /* ---------------- Character counter (limit: 3, enforced: never) ---------------- */
+  $('#sockDesc').addEventListener('input', e => {
+    const n = e.target.value.length, cc = $('#charcount');
+    if (n === 0) cc.textContent = 'Maximaal 3 tekens. Kies ze zorgvuldig.';
+    else if (n <= 3) cc.textContent = `Nog ${3 - n} ${3 - n === 1 ? 'teken' : 'tekens'} over. Geen druk.`;
+    else cc.textContent = `U zit ${n - 3} tekens boven de limiet van 3. Wij accepteren het, maar we zijn er niet blij mee.`;
+  });
+
+  /* ---------------- CAPTCHA ---------------- */
+  let captchaPassed = false, captchaTries = 0;
+  const tiles = ['🧦', '🧤', '🧦', '🥾', '🧦', '🧣', '🧦', '🦶', '🧦'];
+  const captchaFails = [
+    'Onjuist. Vakje 3 was een kous in vermomming.',
+    'Onjuist. U selecteerde een sok die zichzelf niet als sok identificeert.',
+  ];
+  function openCaptcha() {
+    const g = $('#captchaGrid');
+    g.innerHTML = '';
+    tiles.slice().sort(() => Math.random() - .5).forEach(t => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = t;
+      b.addEventListener('click', () => b.classList.toggle('sel'));
+      g.appendChild(b);
+    });
+    $('#captchaMsg').textContent = '';
+    $('#captcha').classList.add('on');
+    g.querySelector('button').focus();
+  }
+  $('#captchaCancel').addEventListener('click', () => {
+    $('#captcha').classList.remove('on');
+    toast('Handen mogen helaas geen sokken melden. Dat is belangenverstrengeling.');
+  });
+  $('#captchaOk').addEventListener('click', () => {
+    if (captchaTries < captchaFails.length) {
+      $('#captchaMsg').textContent = captchaFails[captchaTries++];
+      openCaptchaShuffle();
+      return;
+    }
+    captchaPassed = true;
+    $('#captchaMsg').style.color = 'var(--green)';
+    $('#captchaMsg').textContent = 'Goed genoeg. U bent waarschijnlijk een mens, of een zeer overtuigende voet.';
+    setTimeout(() => { $('#captcha').classList.remove('on'); submitDossier(); }, 1400);
+  });
+  function openCaptchaShuffle() {
+    const msg = $('#captchaMsg').textContent;
+    openCaptcha();
+    $('#captchaMsg').textContent = msg;
+  }
+  addEventListener('keydown', e => { if (e.key === 'Escape') $('#captcha').classList.remove('on'); });
+
+  $('#lostForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!captchaPassed) openCaptcha(); else submitDossier();
+  });
+  function submitDossier() {
+    const desc = $('#sockDesc').value.trim() || 'onbeschrijfelijk';
+    const mood = +$('#sockMood').value;
+    const caseNo = 'WOL-' + Math.floor(rand(1000, 9999)) + '-' + 'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(rand(0, 24))];
+    const year = new Date().getFullYear() + Math.floor(rand(40, 900));
+    const box = $('#dossier');
+    const lines = [
+      `DOSSIER ${caseNo}`,
+      `Omschrijving:  "${desc}"`,
+      `Laatst gezien: ${$('#sockWhen').value}`,
+      `Verblijfplaats: ${pick(dimensions)}`,
+      `Behandelaar:   ${pick(officers)}`,
+      `Verwachte terugkeer: ${year} (onder voorbehoud)`,
+      mood >= 10
+        ? 'Opmerking: uw emotionele band is verontrustend hoog. Er is een rouwkous onderweg.'
+        : mood <= 2
+          ? 'Opmerking: de sok heeft aangegeven u ook niet te missen.'
+          : 'Opmerking: de sok maakt het naar omstandigheden goed.',
+      '',
+      'Status: ' + pick(['IN BEHANDELING', 'ZOEK (letterlijk)', 'DOORGESTUURD NAAR DE WASMACHINE', 'GEPAARD MET VREEMDE']),
+    ];
+    box.textContent = '';
+    let i = 0;
+    const tw = setInterval(() => {
+      box.textContent += lines[i] + '\n';
+      if (++i >= lines.length) clearInterval(tw);
+    }, 180);
+    addEnergy(1.5);
+  }
+
+  // Pie chart
+  const pieData = [
+    ['Wasmachine (opgegeten)', 38, '#b3261e'],
+    ['Parallel universum', 24, '#7a4fa0'],
+    ['Onder de bank, voor altijd', 17, '#2f6b3a'],
+    ['Zijn gaan backpacken', 12, '#c9a227'],
+    ['Zijn eigenlijk een want geworden', 9, '#3d6fb6'],
+    ['Onbekend (ook voor ons)', 4, '#888'],
+  ];
+  const total = pieData.reduce((s, d) => s + d[1], 0); // = 104. Wij geven 104%.
+  let a0 = -Math.PI / 2;
+  const pie = $('#pie'), legend = $('#pieLegend');
+  for (const [label, val, col] of pieData) {
+    const a1 = a0 + (val / total) * Math.PI * 2;
+    const large = a1 - a0 > Math.PI ? 1 : 0;
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', `M0 0 L${100 * Math.cos(a0)} ${100 * Math.sin(a0)} A100 100 0 ${large} 1 ${100 * Math.cos(a1)} ${100 * Math.sin(a1)} Z`);
+    p.setAttribute('fill', col);
+    p.setAttribute('stroke', 'var(--card)');
+    p.setAttribute('stroke-width', '2');
+    pie.appendChild(p);
+    const li = document.createElement('li');
+    li.innerHTML = `<span style="display:inline-block;width:12px;height:12px;background:${col};margin-right:6px;vertical-align:-1px"></span>${label} — <b>${val}%</b>`;
+    legend.appendChild(li);
+    a0 = a1;
+  }
+  const liTot = document.createElement('li');
+  liTot.innerHTML = `<i>Totaal: ${total}%. Sokken zijn groter dan het geheel.</i>`;
+  liTot.style.marginTop = '6px';
+  legend.appendChild(liTot);
+
+  /* ---------------- Forecast ---------------- */
+  const days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag'];
+  const fc = [
+    ['🌀', '40°', 'Bewolkt met kans op roze', 'Kans op roze: 80%'],
+    ['🫧', '60°', 'Zware zeepbuien', 'Wind: 1400 toeren'],
+    ['🧦', '30°', 'Eén sok, geen tweede', 'Paringskans: 3%'],
+    ['🌫️', '90°', 'Pluismist, zicht nihil', 'Advies: blijf in de la'],
+    ['🔥', 'Koken', 'Krimpwaarschuwing code oranje', 'Uw trui wordt een want'],
+  ];
+  $('#forecast').innerHTML = days.map((d, i) => `
+    <div class="card day">
+      ${i === 0 ? '<div class="drum">' + fc[i][0] + '</div>' : '<span class="icon">' + fc[i][0] + '</span>'}
+      <div><b>${d}</b></div>
+      <div class="t">${fc[i][1]}</div>
+      <div>${fc[i][2]}</div>
+      <small>${fc[i][3]}</small>
+    </div>`).join('');
+
+  /* ---------------- Oracle ---------------- */
+  const prophecies = [
+    ['U zult binnenkort iets vinden dat u niet zocht. Het is een sok. Hij is niet van u.',
+     'Rood is de kleur van uw toekomst. En van uw ondergoed, na de volgende was.'],
+    ['De onzichtbare sok ziet alles. Hij heeft u gisteren zien eten. Hij oordeelt niet. Hij noteert.',
+     'Wat u niet ziet, kan u niet kwetsen. Behalve een lego-steen.'],
+    ['Alles wordt omgekeerd. Uw binnenkant wordt uw buitenkant. Dit is geen metafoor; let op bij het aankleden.',
+     'Op dinsdag zal het maandag zijn. Niemand zal het merken behalve u.'],
+    ['Uw ambitie is te groot voor uw voet. Ga naar een grotere voet.',
+     'Een reus zal u om advies vragen. Zeg: “ruim vallend”.'],
+    ['U koos de sok die er niet is. Gefeliciteerd. U bent nu de sok.',
+     'Leegte is ook een keuze. Een slechte, maar toch.'],
+  ];
+  document.querySelectorAll('[data-sock]').forEach(b => b.addEventListener('click', () => {
+    const p = $('#prophecy');
+    p.style.opacity = 0;
+    setTimeout(() => {
+      p.textContent = '“' + pick(prophecies[+b.dataset.sock]) + '”';
+      p.style.transition = 'opacity .6s';
+      p.style.opacity = 1;
+    }, 250);
+    addEnergy(0.8);
+  }));
+
+  /* ---------------- Translator ---------------- */
+  const syl = ['mmf', 'wol', 'hrrbl', 'pluis', 'flap', 'mnyeh', 'sok', 'frommel', 'bwaa', 'tenentenen', 'knoop', 'hielhiel'];
+  function hash(str) { let h = 7; for (const c of str) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+  $('#tolkIn').addEventListener('input', e => {
+    const words = e.target.value.trim().split(/\s+/).filter(Boolean);
+    if (!words.length) { $('#tolkOut').textContent = 'Mmf hrrbl wol.'; $('#tolkNote').textContent = 'Vertaalzekerheid: 0%'; return; }
+    const out = words.map(w => {
+      const h = hash(w.toLowerCase());
+      const t = syl[h % syl.length] + (w.length > 6 ? '-' + syl[(h >> 5) % syl.length] : '');
+      return /[A-Z]/.test(w[0]) ? t[0].toUpperCase() + t.slice(1) : t;
+    }).join(' ') + (/\?$/.test(e.target.value) ? '?! (met de mond wijd open)' : '.');
+    $('#tolkOut').textContent = out;
+    const notes = ['Vertaalzekerheid: 12%', 'Let op: dit is in sommige dialecten een huwelijksaanzoek.',
+      'In Sokpopisch-Zuid betekent dit "uw voet ruikt naar heimwee".', 'Vertaalzekerheid: 104%',
+      'Waarschuwing: deze zin heeft juridische gevolgen in de wasmand.'];
+    $('#tolkNote').textContent = notes[hash(e.target.value) % notes.length];
+    addEnergy(0.35);
+  });
+
+  /* ---------------- Big button ---------------- */
+  let presses = 0;
+  const reactions = [
+    'U drukte de knop in. Er is niets gebeurd. Nog niet.',
+    'Wij vroegen het zo vriendelijk.',
+    'Professor Hielke is nu teleurgesteld. Zijn monocle is beslagen.',
+    'Er is in Drenthe een hunebed omgevallen. Wij zeggen niks. Wij denken alleen.',
+    'Stop.',
+    'Het instituut begint scheef te hangen. Dat is uw schuld.',
+    'U heeft nu meer knopdrukken dan de gemiddelde lift. Bent u een lift?',
+    'Goed. U wilt het zo.',
+  ];
+  $('#bigButton').addEventListener('click', () => {
+    presses++;
+    const msg = $('#buttonMsg');
+    addEnergy(presses * 0.7);
+    if (presses < reactions.length) {
+      msg.textContent = reactions[presses - 1];
+      if (presses === 6) document.body.classList.add('tilted');
+    } else if (presses === reactions.length) {
+      msg.textContent = reactions[presses - 1];
+      document.body.classList.remove('tilted');
+      document.body.classList.add('flipped');
+      setTimeout(() => {
+        document.body.classList.remove('flipped');
+        msg.textContent = 'Het universum is hersteld. U heeft een officiële berisping gekregen per postduif. De duif is ook teleurgesteld.';
+        $('#bigButton').textContent = 'NU ECHT NIET INDRUKKEN';
+      }, 3500);
+    } else {
+      const extra = ['Nee.', 'Nog steeds nee.', 'De knop heeft vakantie.', 'De knop is in therapie vanwege u.',
+        'De knop drukt nu terug.', 'Wij hebben uw voeten gemeld.'];
+      msg.textContent = extra[(presses - reactions.length - 1) % extra.length];
+      const btn = $('#bigButton');
+      btn.style.transform = `rotate(${rand(-25, 25)}deg) scale(${Math.max(0.4, 1 - (presses - 8) * 0.06)})`;
+    }
+  });
+
+  /* ---------------- Consent ---------------- */
+  const refuse = $('#refuse');
+  let dodges = 0;
+  function dodge() {
+    dodges++;
+    if (dodges > 6) {
+      refuse.textContent = 'Oké, prima';
+      refuse.style.transform = '';
+      return;
+    }
+    refuse.style.transform = `translate(${rand(-140, 140)}px, ${rand(-60, 10)}px) rotate(${rand(-30, 30)}deg)`;
+    refuse.textContent = pick(['Weigeren?', 'Echt?', 'Hier!', 'Mis!', 'Bijna', 'Te traag']);
+  }
+  refuse.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') dodge(); });
+  refuse.addEventListener('click', () => {
+    if (dodges <= 6 && matchMedia('(hover: hover)').matches) { dodge(); return; }
+    $('#consent').innerHTML = '<h3>Weigering genoteerd</h3><p style="margin:0;font-size:14px">Wij hebben uw sokken niet geplaatst. Wel hebben wij uw schoenen losgemaakt. Fijne dag.</p>';
+    setTimeout(() => $('#consent').remove(), 3200);
+  });
+  $('#accept').addEventListener('click', () => {
+    $('#consent').innerHTML = '<h3>Bedankt!</h3><p style="margin:0;font-size:14px">Er zijn 2 sokken op uw apparaat geplaatst. Eén is al kwijt.</p>';
+    setTimeout(() => $('#consent').remove(), 2600);
+  });
+
+  /* ---------------- Counter (counts down) ---------------- */
+  let visitors = 1000000 - Math.floor(rand(0, 9999));
+  const counter = $('#counter');
+  function tickCounter() {
+    visitors -= Math.floor(rand(1, 4));
+    counter.textContent = String(visitors).padStart(7, '0');
+  }
+  tickCounter();
+  setInterval(tickCounter, 1300);
+
+  $('#year').textContent = new Date().getFullYear();
+
+  /* ---------------- Crest & secret ---------------- */
+  let crestClicks = 0;
+  $('#crest').addEventListener('click', () => {
+    crestClicks++;
+    $('#crest').textContent = ['🧦', '🧤', '🧣', '🥾', '🦶', '🧦'][crestClicks % 6];
+  });
+  $('#secret').addEventListener('click', e => {
+    e.preventDefault();
+    const s = document.createElement('div');
+    s.textContent = '🧦';
+    s.style.cssText = 'position:fixed;font-size:40px;z-index:60;pointer-events:none;left:50%;top:-50px';
+    document.body.appendChild(s);
+    for (let i = 0; i < 40; i++) {
+      const c = s.cloneNode(true);
+      c.style.left = rand(0, 100) + 'vw';
+      document.body.appendChild(c);
+      c.animate([
+        { transform: 'translateY(0) rotate(0)' },
+        { transform: `translateY(${innerHeight + 120}px) rotate(${rand(-720, 720)}deg)` },
+      ], { duration: rand(1800, 4200), easing: 'cubic-bezier(.4,0,.8,.6)' }).onfinish = () => c.remove();
+    }
+    s.remove();
+    e.target.textContent = 'U klikte toch. Er regent nu sokken. Tevreden?';
+    addEnergy(6);
+  });
+
+  /* ---------------- Upside-down section ---------------- */
+  let rot = 180;
+  $('#rotateBtn').addEventListener('click', () => {
+    rot += 90;
+    $('#upside').style.transform = `rotate(${rot}deg)`;
+    if (rot % 360 === 0) {
+      toast('Perfect. Nu staat de rest van de website ondersteboven. Grapje. Of niet.');
+      $('#rotateBtn').textContent = '↻ Nog een keer, voor de gezelligheid';
+    }
+  });
+
+  /* ---------------- "To the middle" ---------------- */
+  $('#toMiddle').addEventListener('click', () => {
+    const mid = (document.documentElement.scrollHeight - innerHeight) / 2;
+    scrollTo({ top: mid, behavior: 'smooth' });
+    toast(Math.abs(scrollY - mid) < 40 ? 'U was al in het midden. Dat is een zeldzame gave.' : 'Op weg naar het midden. Niet naar boven, niet naar beneden. Gewoon midden.');
+  });
+
+  /* ---------------- Shy big button ---------------- */
+  $('#bigButton').addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse' || presses >= reactions.length) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    e.currentTarget.style.transform = `translateX(${-dx * 0.35}px) rotate(${-dx * 0.08}deg)`;
+  });
+  $('#bigButton').addEventListener('pointerleave', e => {
+    if (presses < reactions.length) e.currentTarget.style.transform = '';
+  });
+
+  /* ---------------- Context menu ---------------- */
+  const ctxMenu = $('#ctxMenu');
+  addEventListener('contextmenu', e => {
+    if (e.shiftKey || e.target.closest('input, select')) return;
+    e.preventDefault();
+    ctxMenu.style.left = Math.min(e.clientX, innerWidth - 250) + 'px';
+    ctxMenu.style.top = Math.min(e.clientY, innerHeight - 270) + 'px';
+    ctxMenu.classList.add('on');
+  });
+  addEventListener('click', e => { if (!e.target.closest('#ctxMenu')) ctxMenu.classList.remove('on'); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') ctxMenu.classList.remove('on'); });
+  ctxMenu.addEventListener('click', e => {
+    const b = e.target.closest('[data-ctx]');
+    if (!b) return;
+    ctxMenu.classList.remove('on');
+    const act = b.dataset.ctx;
+    if (act === 'back') { scrollTo({ top: 0, behavior: 'smooth' }); toast('Welkom in 1743. Sokken bestaan nog niet. Pas op uw voeten.'); }
+    if (act === 'copy') toast('Gekopieerd naar linkersok. Rechtersok is jaloers.');
+    if (act === 'paste') toast('Geplakt. Het gaat er niet meer af.');
+    if (act === 'sit') {
+      document.body.classList.add('tilted');
+      toast('De pagina zit nu even. Ze staat zo weer op.');
+      setTimeout(() => document.body.classList.remove('tilted'), 2500);
+    }
+    if (act === 'inspect') toast('Bij nadere inspectie: het is wol. Helemaal tot onderaan.');
+    if (act === 'normal') toast('Het normale menu is met vakantie. Houd Shift ingedrukt om het te bellen.');
+  });
+
+  /* ---------------- Assistant "Sokkie" ---------------- */
+  const sokkie = $('#sokkie');
+  const tips = [
+    ['Het lijkt erop dat u een website bekijkt. Wilt u hulp met kijken?',
+      [['Ja', 'Kijk met beide ogen. Graag gedaan.'], ['Nee', 'Begrepen. Ik blijf gewoon hier. Kijkend.']]],
+    ['Tip: als u scrolt, beweegt de website. Dat is geen beving. Meestal.',
+      [['Bedankt', 'Graag gedaan. Dat was mijn enige tip.']]],
+    ['Wist u dat u kunt rechtsklikken? Doe het. Doe het nu.',
+      [['Oké', 'Ik wacht.'], ['Liever niet', 'Dat respecteer ik niet, maar ik accepteer het.']]],
+    ['Het lijkt erop dat u knippert. Wilt u dat ik dat voor u overneem?',
+      [['Ja', 'Ik knipper nu voor u. U mag uw ogen open laten.'], ['Nee', 'Dan knippert u maar alleen.']]],
+    ['Ik ben Sokkie, uw assistent. Ik heb geen functie. Ik ben hier voor het gevoel.',
+      [['Fijn', '❤']]],
+  ];
+  let tipIdx = 0, closeTries = 0, sokkieTimer;
+  function showTip() {
+    const [text, acts] = tips[tipIdx++ % tips.length];
+    $('#sokkieText').textContent = text;
+    const box = $('#sokkieActs');
+    box.innerHTML = '';
+    acts.forEach(([label, reply]) => {
+      const b = document.createElement('button');
+      b.textContent = label;
+      b.addEventListener('click', () => { $('#sokkieText').textContent = reply; box.innerHTML = ''; });
+      box.appendChild(b);
+    });
+    sokkie.classList.add('on');
+  }
+  function scheduleSokkie(ms) {
+    clearTimeout(sokkieTimer);
+    sokkieTimer = setTimeout(() => { showTip(); scheduleSokkie(22000); }, ms);
+  }
+  $('#sokkieClose').addEventListener('click', () => {
+    closeTries++;
+    if (closeTries % 2 === 1) {
+      $('#sokkieText').textContent = 'Weet u het zeker? Ik heb niemand anders. Klik nog eens als u het meent.';
+      $('#sokkieActs').innerHTML = '';
+      return;
+    }
+    sokkie.classList.remove('on');
+    clearTimeout(sokkieTimer);
+    sokkieTimer = setTimeout(() => {
+      $('#sokkieText').textContent = 'Ik ben terug. Ik heb niks gemist. Wel u.';
+      $('#sokkieActs').innerHTML = '';
+      sokkie.classList.add('on');
+      scheduleSokkie(25000);
+    }, 45000);
+  });
+  // Sokkie waits politely until the consent box is gone
+  const waitConsent = setInterval(() => {
+    if (!document.getElementById('consent')) { clearInterval(waitConsent); scheduleSokkie(4000); }
+  }, 500);
+})();
+</script>
+</body>
+</html>
